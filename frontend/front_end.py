@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import json
 import os
+from pathlib import Path
 from streamlit_option_menu import option_menu
 
 # Get the backend URL from the environment variable
@@ -92,7 +93,7 @@ st.markdown(
 if selected_page == "Home":
     st.title("📈 Churn Prediction App")
     st.image(
-        "churn_dashboard.jpeg", 
+        str(Path(__file__).with_name("churn_dashboard.jpeg")),
         caption="Understand and predict customer churn"
     )
     st.markdown(
@@ -150,7 +151,8 @@ elif selected_page == "Predict with Form":
 
         if submit:
             try:
-                response = requests.post(f"{backend_url}/predict", data=json.dumps(input_data), headers={"Content-Type": "application/json"})
+                response = requests.post(f"{backend_url}/predict", data=json.dumps(input_data), headers={"Content-Type": "application/json"}, timeout=60)
+                response.raise_for_status()
                 predictions = response.json().get("predictions")
 
                 # Display the prediction result
@@ -178,6 +180,7 @@ elif selected_page == "Predict with CSV":
             response = requests.post(
                 f"{backend_url}/predict/csv",
                 files={"file": (uploaded_file.name, uploaded_file, "text/csv")},
+                timeout=60,
             )
             
             # Check if the response is valid

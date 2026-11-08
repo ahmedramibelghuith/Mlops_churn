@@ -1,152 +1,173 @@
-# MLOps Project: Customer Churn Prediction
+# Customer Churn Prediction
 
-This repository contains the complete implementation of an MLOps pipeline for **Customer Churn Prediction**, offering detailed churn analysis, lifestyle-based insights, and behavior-driven detection. The project adheres to industry-standard MLOps practices, ensuring efficient development, deployment, and monitoring for reliable and scalable outcomes.
+Predict customer churn through a FastAPI API and a Streamlit application. Random Forest and XGBoost experiments are tracked with MLflow on DagsHub; customer data is versioned with DVC.
 
----
+## Features
 
-## Why Customer Churn Prediction?
+- Individual customer predictions with a validated JSON request.
+- Batch predictions from uploaded CSV files.
+- Streamlit form, CSV upload, and embedded Power BI dashboard.
+- Shared feature contract across training, JSON, and CSV inputs.
+- Training pipelines that fit preprocessing on the training split and log it with the classifier.
+- Selection of the highest macro-F1 completed run within the configured experiment.
+- Explicit model registration with a configurable minimum F1 score.
+- Health, feature-schema, and model-information endpoints.
+- Automated API/preprocessing tests and GitHub Actions checks.
+- A Jenkins pipeline definition for testing, data retrieval, training, and registration.
 
-Customer churn is a critical issue for subscription-based businesses, directly impacting revenue and profitability. Retaining existing customers is more cost-effective than acquiring new ones, making it essential to understand the drivers of churn. This project uses a dataset that provides insights into customer demographics, usage behavior, subscription details, and engagement levels. By leveraging this data, businesses can:
-
-- Identify at-risk customers.
-- Enhance retention strategies.
-- Foster long-term customer loyalty.
-
----
-
-## Dataset Overview
-
-The dataset used in this project is designed to help identify and analyze factors contributing to customer churn. Below is a description of the key features:
-
-1. **Age:** The age of the customer.
-2. **Gender:** The gender of the customer (e.g., Male, Female).
-3. **Usage Frequency:** The frequency with which the customer uses the service.
-4. **Support Calls:** The number of support calls made by the customer.
-5. **Payment Delay:** The number of days the customer delayed payment.
-6. **Subscription Type:** The type of subscription plan the customer is on (e.g., Basic, Standard, Premium).
-7. **Contract Length:** The duration of the subscription contract (e.g., Monthly, Quarterly, Annual).
-8. **Total Spend:** The total amount spent by the customer during their tenure.
-9. **Last Interaction:** The number of days since the customer’s last interaction with the service.
-10. **Churn:** A binary variable indicating if the customer has churned (1 for churn, 0 for retention).
-11. **Tenure Group:** The tenure of the customer, categorized into ranges (e.g., 1–12 months, 25–36 months).
-
----
-
-## Key Features
-
-### 1. **Data Workflow**
-   - **Data Handling:** Comprehensive CSV datasets with demographic, behavioral, and subscription details.
-   - **EDA & Preprocessing:** Performed exploratory data analysis (EDA) and applied robust preprocessing techniques to clean and standardize the data.
-   - **Modeling:** Built and trained machine learning models using **MLflow** for experiment tracking and hyperparameter tuning.
-
-### 2. **Version Control**
-   - Managed datasets, pipelines, and models with **DVC (Data Version Control)** for reproducibility and traceability.
-
-### 3. **Application Development**
-   - Developed a **FastAPI backend** to expose the churn prediction functionality as an API.
-   - Built a user-friendly **Streamlit frontend** for intuitive interaction.
-
-### 4. **Testing**
-   - Employed **Deepchecks** to validate data quality and model performance.
-
-### 5. **Deployment**
-   - Deployed on **Render** with Dockerized services for reliability and scalability.
-
-### 6. **CI/CD Automation**
-   - Automated build, test, and deploy processes using **Jenkins**.
-
-### 7. **Monitoring**
-   - Integrated **Arize** for end-to-end monitoring of model performance and data drift detection.
-
----
+Deepchecks reports and the Arize monitoring notebook are included as offline analysis tools. Live prediction logging, automatic deployment, and drift-triggered retraining are not implemented.
 
 ## Architecture
 
-The MLOps pipeline is designed with modular components:
+![Customer Churn Prediction architecture](customer_churn_architecture.svg)
 
-1. **Data Management**
-   - Raw data ingestion and preprocessing pipelines.
-   - Versioning with **DVC** for datasets and trained models.
+The diagram provides an architecture overview. Jenkins requires separate configuration. Prediction-history storage and automatic deployment are not implemented; model selection for serving is configured through `MODEL_URI`. Existing Dockerfiles are retained, but Docker Compose is not included.
 
-2. **Modeling**
-   - Experiment tracking and model registry using **MLflow**.
+## Repository structure
 
-3. **Application Development**
-   - **FastAPI** backend for API development.
-   - **Streamlit** frontend for user interaction.
+```text
+backend/
+  main.py                         FastAPI endpoints and model lifecycle
+  examplejson/churn_info.py        Request validation
+  src/
+    features.py                   Ordered feature schema and aliases
+    clean_data_csv.py              Legacy classifier preprocessing
+    clean_data_json.py             Same preprocessing for JSON
+    data_preprocessing_training.py Raw train/test split
+    modeling.py                   Training entry point
+    treatement.py                  Pipeline training and MLflow logging
+    tracking.py                   Tracking configuration and run selection
+frontend/front_end.py              Streamlit application
+scripts/register_best_model.py     Threshold check and model registration
+notebooks/                        EDA and historical experiments
+testing/                          Deepchecks notebook and saved reports
+tests/                            Automated tests
+monitoring/                       Arize notebook and legacy processors
+jenkins/Dockerfile                Existing optional Jenkins image
+Jenkinsfile                       CI training and registration definition
+.github/workflows/checks.yml       GitHub test workflow
+requirements-dev.txt              Backend and testing dependencies
+```
 
-4. **Deployment**
-   - Hosted on **Render** for scalability.
-   - Containerized services using Docker.
+## Data and prediction schema
 
-5. **Testing & Validation**
-   - Quality assurance with **Deepchecks**.
+The target is `Churn`: `1` means churn and `0` means retained. `Churn` and `CustomerID` are excluded from model inputs.
 
-6. **CI/CD Pipeline**
-   - Continuous integration, training, and deployment with **Jenkins**.
+| Feature | Type / accepted values |
+| --- | --- |
+| Age | Nonnegative integer |
+| Gender | Female, Male |
+| Tenure | Nonnegative integer, months |
+| Usage Frequency | Nonnegative integer |
+| Support Calls | Nonnegative integer |
+| Payment Delay | Nonnegative integer, days |
+| Subscription Type | Basic, Standard, Premium |
+| Contract Length | Monthly, Quarterly, Annual |
+| Total Spend | Nonnegative number |
+| Last Interaction | Nonnegative integer, days |
 
-7. **Monitoring**
-   - **Arize** for monitoring predictions, detecting anomalies, and addressing data drift.
+CSV headers accept spaces or underscores. Inputs are reordered to the feature schema; identifiers and labels are excluded. JSON validates categories and numeric ranges. CSV preprocessing rejects missing/duplicate columns and missing values; it does not yet enforce every JSON field constraint. Newly trained pipelines encode unseen CSV categories with `handle_unknown="ignore"`; legacy encoders reject unseen categories.
 
----
+## Configuration
 
-## Technologies Used
+No local environment, package installation, or Docker execution is required merely to publish this repository. The commands below are for running it later with dependencies already available, or on a CI/deployment machine.
 
-- **Data Management:** DVC  
-- **Model Tracking & Experimentation:** MLflow  
-- **Testing:** Deepchecks  
-- **Deployment:** Render, Docker  
-- **CI/CD:** Jenkins  
-- **Monitoring:** Arize  
-- **Frontend:** Streamlit  
-- **Backend:** FastAPI  
+Provide credentials through the process environment or your hosting service's secret settings. Do not commit tokens.
 
----
+| Variable | Purpose / default |
+| --- | --- |
+| `MLFLOW_TRACKING_URI` | Defaults to `https://dagshub.com/rami4real/mymlproject.mlflow` |
+| `MLFLOW_TRACKING_USERNAME` | DagsHub username; supply externally |
+| `MLFLOW_TRACKING_PASSWORD` | DagsHub token; supply externally |
+| `MLFLOW_EXPERIMENT_NAME` | Defaults to `churn-experiment` |
+| `MODEL_URI` | Optional exact MLflow model URI; otherwise select highest macro F1 |
+| `CORS_ORIGINS` | Comma-separated frontend origins; defaults to `*` without credentials |
+| `BACKEND_URL` | Streamlit API URL; defaults to `http://localhost:8080` |
 
-## Setup and Installation
+For an existing Bash session:
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/rami4real/Mlops_churn.git
-   cd Mlops_churn
-   ```
+```bash
+export MLFLOW_TRACKING_USERNAME="your-dagshub-username"
+read -rsp "DagsHub token: " MLFLOW_TRACKING_PASSWORD
+printf '\n'
+export MLFLOW_TRACKING_PASSWORD
+```
 
-2. Initialize DVC:
-   ```bash
-   dvc init
-   ```
+Previously committed credentials must be revoked in DagsHub. Removing a value from current files does not erase it from Git history. Local `.env` files are ignored and are not automatically loaded by these entry points.
 
-3. Train the model and track experiments with MLflow:
-   ```bash
-   mlflow run .
-   ```
+## Run the application
 
-4. Deploy the application:
-   - Configure the `Dockerfile` for deployment on Render.
-   - Push the repository to trigger deployment.
+From the repository root, using an existing Python installation with the required packages:
 
-5. Automate CI/CD with Jenkins:
-   - Use the provided `Jenkinsfile`.
-   - Configure the pipeline to automate build, test, and deploy steps.
+```bash
+python3 -m uvicorn backend.main:app --host 0.0.0.0 --port 8080
+```
 
-6. Monitor the model:
-   - Integrate Arize for real-time performance tracking.
+In a second terminal:
 
----
+```bash
+python3 -m streamlit run frontend/front_end.py
+```
 
-## Contributions
+- Frontend: <http://localhost:8501>
+- API documentation: <http://localhost:8080/docs>
+- Readiness: <http://localhost:8080/health>
 
-This project was collaboratively developed by:
+Backend dependencies are declared in `backend/requirements.txt`; frontend dependencies are in `frontend/requirements.txt`. `requirements-dev.txt` adds the API test dependencies. Notebook tooling such as DVC, Deepchecks, and Arize is separate from the serving dependencies.
 
-- **Ahmed Rami Belguith**  
-- **Mohamed Hbib Kammoun**  
-- **Azza Shell**  
+## Train and register
 
-## Project by
-<a href="https://github.com/rami4real/Mlops_churn/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=rami4real/Mlops_churn" />
-</a>
----
+Restore data using the existing DVC configuration; do not initialize DVC again:
 
-Thank you for exploring the **Customer Churn Prediction MLOps Pipeline**! 🚀
+```bash
+dvc pull
+python3 -m backend.src.modeling --data data/customer_churn_dataset.csv --version v2.0
+python3 -m pytest -q
+python3 -m scripts.register_best_model --min-f1 0.80
+```
 
+The threshold is an example, not a validated business requirement. Choose a value appropriate for your data. Registration writes an ignored `artifacts/production_model.json` manifest containing the immutable model URI and registered version. Set `MODEL_URI` to that URI when serving; registration does not deploy or restart the app.
+
+Training splits raw records with stratification before fitting preprocessing. Each model contains its own numeric scaler and categorical encoder. Macro precision, recall, and F1 are logged to MLflow. Do not repeatedly tune against the held-out split; a separate final evaluation dataset is recommended before production promotion.
+
+### Existing models
+
+The API continues to support older standalone classifiers using the bundled `backend/*Final.pkl` processors. New pipeline models carry `input_format: raw-v1` metadata and perform their own preprocessing. Existing remote artifacts are not modified by this repository update. Models produced by the historical training script with the target included must be retrained; they are incompatible with the intended prediction schema. Historical notebooks remain research references; the module entry point above is the maintained training workflow.
+
+## API example
+
+```bash
+curl -X POST http://localhost:8080/predict \
+  -H 'Content-Type: application/json' \
+  -d '{"Age":22,"Gender":"Female","Tenure":25,"Usage Frequency":14,"Support Calls":4,"Payment Delay":27,"Subscription Type":"Basic","Contract Length":"Monthly","Total Spend":598.5,"Last Interaction":9}'
+
+curl -X POST http://localhost:8080/predict/csv \
+  -F 'file=@customers.csv'
+```
+
+Both routes return `{"predictions": [...]}`. `/features` returns the ordered schema; `/model-info` reports the selected model URI. `/health` returns HTTP 503 when a model could not be loaded. Model loading is attempted at startup; fix the configuration and restart the service after a failure.
+
+## CI and monitoring
+
+GitHub Actions runs isolated API and preprocessing tests without DagsHub credentials or a downloaded dataset. Model loading is mocked in API tests; these tests do not establish model accuracy.
+
+To use Jenkins later, configure a Linux agent with Python, venv support, Git, and network access. Add a Secret Text credential named `dagshub-token`, configure this repository's `Jenkinsfile`, and set the `MIN_F1` parameter. The pipeline installs its dependencies on the CI agent, retrieves DVC data, trains the models, and registers a qualifying candidate. It performs no Docker operations or automatic deployment. Configure a webhook or polling separately if push-triggered execution is desired.
+
+The Arize notebook requires externally supplied account credentials. Saved Deepchecks HTML files are historical reports, not current CI results.
+
+## Before pushing
+
+```bash
+git status --short
+git diff --check
+git diff
+git diff --cached
+```
+
+Review both current and staged changes, revoke exposed historical credentials, and verify your remote destination before committing and pushing. Local credentials, bytecode, notebook checkpoints, and swap files are excluded from tracking. The original local files are retained.
+
+## Contributors
+
+- Ahmed Rami Belguith
+- Mohamed Hbib Kammoun
+- Azza Shell

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1195" viewBox="0 0 2000 1195">
+<defs>
+  <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8.2" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8.2 5 L1 9" fill="none" stroke="#7798B7" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8.2" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8.2 5 L1 9" fill="none" stroke="#5D9C89" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="arrowPurple" markerWidth="10" markerHeight="10" refX="8.2" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8.2 5 L1 9" fill="none" stroke="#967DC4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  <marker id="arrowDashed" markerWidth="10" markerHeight="10" refX="8.2" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 L8.2 5 L1 9" fill="none" stroke="#A8A8BA" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+ </defs>
+<rect x="0" y="0" width="2000" height="1195" rx="0" fill="#FFFFFF" stroke="none" stroke-width="1" />
+<rect x="86" y="55" width="8" height="68" rx="4" fill="#76A8D8" stroke="none" stroke-width="1" />
+<text x="116" y="89" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="730" fill="#1B344A" text-anchor="start" >Customer Churn Prediction — Architecture</text>
+<text x="118" y="122" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="450" fill="#71879A" text-anchor="start" >Application flow · Jenkins CI pipeline · Versioned data and model registry</text>
+<rect x="80" y="161" width="1818" height="324" rx="26" fill="#F6FAFF" stroke="#D9E9F6" stroke-width="1.7" />
+<rect x="105" y="183" width="46" height="38" rx="11" fill="#76A4CA" stroke="none" stroke-width="1" />
+<text x="128" y="209" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="760" fill="#FFFFFF" text-anchor="middle" >01</text>
+<text x="168" y="209" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700" fill="#29465E" text-anchor="start" >APPLICATION · Churn Prediction</text>
+<rect x="80" y="554" width="1818" height="516" rx="26" fill="#F7FBF9" stroke="#DBEDE5" stroke-width="1.7" />
+<rect x="105" y="577" width="46" height="38" rx="11" fill="#79AC9B" stroke="none" stroke-width="1" />
+<text x="128" y="603" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="760" fill="#FFFFFF" text-anchor="middle" >02</text>
+<text x="168" y="603" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700" fill="#29465E" text-anchor="start" >CI/CD · Jenkins</text>
+<rect x="1553" y="583" width="305" height="35" rx="14" fill="#EAF5F1" stroke="none" stroke-width="1" />
+<text x="1705" y="607" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="670" fill="#558B7D" text-anchor="middle" >Triggered by Git push</text>
+<path d="M 595 313 L 782 313" fill="none" stroke="#7297B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 1210 313 L 1397 313" fill="none" stroke="#7297B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<text x="689" y="296" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="650" fill="#71889C" text-anchor="middle" >HTTP</text>
+<text x="1302" y="296" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="650" fill="#71889C" text-anchor="middle" >Load pipeline</text>
+<path d="M 997 374 L 997 409" fill="none" stroke="#A4A5B6" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" opacity="1" stroke-dasharray="7 7" marker-end="url(#arrowDashed)"/>
+<path d="M 368 742 L 413 742" fill="none" stroke="#7195AF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 664 742 L 709 742" fill="none" stroke="#7195AF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 960 742 L 1005 742" fill="none" stroke="#7195AF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 1256 742 L 1301 742" fill="none" stroke="#7195AF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 1552 742 L 1597 742" fill="none" stroke="#7195AF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<path d="M 1145 878 L 1145 844 L 1393 844 L 1393 804" fill="none" stroke="#5D9C89" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowGreen)"/>
+<path d="M 1447 804 L 1447 878" fill="none" stroke="#5D9C89" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowGreen)"/>
+<path d="M 1667 804 L 1667 841 L 1527 841 L 1527 878" fill="none" stroke="#5D9C89" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowGreen)"/>
+<path d="M 1785 804 L 1785 878" fill="none" stroke="#5D9C89" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowGreen)"/>
+<path d="M 1508 979 L 1508 1036 L 1938 1036 L 1938 313 L 1832 313" fill="none" stroke="#967DC4" stroke-width="3.7" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowPurple)"/>
+<rect x="175" y="260" width="420" height="119" rx="19" fill="#D9E5ED" stroke="none" stroke-width="1" opacity="0.28"/>
+<rect x="175" y="255" width="420" height="119" rx="19" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.7" />
+<rect x="193" y="277" width="7" height="75" rx="3" fill="#78A9D6" stroke="none" stroke-width="1" />
+<text x="218" y="303" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="650" fill="#19344F" text-anchor="start" >Streamlit Frontend</text>
+<text x="218" y="337" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="450" fill="#647A8F" text-anchor="start" >User interface for churn inputs</text>
+<rect x="790" y="260" width="420" height="119" rx="19" fill="#D9E5ED" stroke="none" stroke-width="1" opacity="0.28"/>
+<rect x="790" y="255" width="420" height="119" rx="19" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.7" />
+<rect x="808" y="277" width="7" height="75" rx="3" fill="#6C9AD1" stroke="none" stroke-width="1" />
+<text x="833" y="303" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="650" fill="#19344F" text-anchor="start" >FastAPI Backend</text>
+<text x="833" y="337" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="450" fill="#647A8F" text-anchor="start" >Prediction endpoint</text>
+<rect x="1397" y="260" width="435" height="119" rx="19" fill="#D9E5ED" stroke="none" stroke-width="1" opacity="0.28"/>
+<rect x="1397" y="255" width="435" height="119" rx="19" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.7" />
+<rect x="1415" y="277" width="7" height="75" rx="3" fill="#67A994" stroke="none" stroke-width="1" />
+<text x="1440" y="303" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="650" fill="#19344F" text-anchor="start" >Model Pipeline</text>
+<text x="1440" y="337" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="450" fill="#647A8F" text-anchor="start" >Preprocessing + Classifier</text>
+<rect x="859" y="409" width="290" height="49" rx="13" fill="#FAFBFD" stroke="#B8BDC9" stroke-width="1.8" stroke-dasharray="8 6"/>
+<text x="1004" y="439" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="600" fill="#828899" text-anchor="middle" >Planned: Prediction Logging</text>
+<rect x="1430" y="507" width="415" height="36" rx="16" fill="#F4F0FC" stroke="#E9DDF8" stroke-width="1.2" />
+<circle cx="1454" cy="525" r="5" fill="#967DC4"/>
+<text x="1470" y="531" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="680" fill="#8068B4" text-anchor="start" >Manual model selection via MODEL_URI</text>
+<rect x="129" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="129" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="144" y="699" width="7" height="86" rx="3" fill="#759CC6" stroke="none" stroke-width="1" />
+<rect x="160" y="700" width="39" height="34" rx="10" fill="#759CC624" stroke="none" stroke-width="1" />
+<text x="179.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >1</text>
+<text x="212" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Checkout</text>
+<text x="160" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >Source code</text>
+<rect x="425" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="425" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="440" y="699" width="7" height="86" rx="3" fill="#759CC6" stroke="none" stroke-width="1" />
+<rect x="456" y="700" width="39" height="34" rx="10" fill="#759CC624" stroke="none" stroke-width="1" />
+<text x="475.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >2</text>
+<text x="508" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Setup</text>
+<text x="456" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >Dependencies</text>
+<rect x="721" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="721" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="736" y="699" width="7" height="86" rx="3" fill="#759CC6" stroke="none" stroke-width="1" />
+<rect x="752" y="700" width="39" height="34" rx="10" fill="#759CC624" stroke="none" stroke-width="1" />
+<text x="771.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >3</text>
+<text x="804" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Test</text>
+<text x="752" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >Unit &amp; pipeline tests</text>
+<rect x="1017" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="1017" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="1032" y="699" width="7" height="86" rx="3" fill="#759CC6" stroke="none" stroke-width="1" />
+<rect x="1048" y="700" width="39" height="34" rx="10" fill="#759CC624" stroke="none" stroke-width="1" />
+<text x="1067.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >4</text>
+<text x="1100" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Retrieve Data</text>
+<text x="1048" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >DVC dataset</text>
+<rect x="1313" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="1313" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="1328" y="699" width="7" height="86" rx="3" fill="#5B9E8B" stroke="none" stroke-width="1" />
+<rect x="1344" y="700" width="39" height="34" rx="10" fill="#5B9E8B24" stroke="none" stroke-width="1" />
+<text x="1363.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >5</text>
+<text x="1396" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Train</text>
+<text x="1344" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >Churn classifier</text>
+<rect x="1609" y="684" width="239" height="124" rx="17" fill="#DDE6EC" stroke="none" stroke-width="1" opacity="0.32"/>
+<rect x="1609" y="680" width="239" height="124" rx="17" fill="#FFFFFF" stroke="#DFE8F0" stroke-width="1.6" />
+<rect x="1624" y="699" width="7" height="86" rx="3" fill="#957FC2" stroke="none" stroke-width="1" />
+<rect x="1640" y="700" width="39" height="34" rx="10" fill="#957FC224" stroke="none" stroke-width="1" />
+<text x="1659.5" y="723" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="750" fill="#FFFFFF" text-anchor="middle" >6</text>
+<text x="1692" y="727" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="650" fill="#20384E" text-anchor="start" >Register</text>
+<text x="1640" y="768" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500" fill="#6D8195" text-anchor="start" >Model version</text>
+<rect x="1030" y="878" width="235" height="101" rx="17" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.6" />
+<rect x="1046" y="898" width="6" height="61" rx="3" fill="#75A69B" stroke="none" stroke-width="1" />
+<text x="1067" y="920" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="650" fill="#1F3B52" text-anchor="start" >DVC</text>
+<text x="1067" y="950" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="450" fill="#6B8192" text-anchor="start" >Versioned Dataset</text>
+<rect x="1333" y="878" width="260" height="101" rx="17" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.6" />
+<rect x="1349" y="898" width="6" height="61" rx="3" fill="#6DA5BA" stroke="none" stroke-width="1" />
+<text x="1370" y="920" font-family="Inter, Arial, sans-serif" font-size="21" font-weight="650" fill="#1F3B52" text-anchor="start" >MLflow / DagsHub</text>
+<text x="1370" y="950" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="450" fill="#6B8192" text-anchor="start" >Tracking + Registry</text>
+<rect x="1605" y="878" width="283" height="101" rx="17" fill="#FFFFFF" stroke="#DDE8F0" stroke-width="1.6" />
+<rect x="1621" y="898" width="6" height="61" rx="3" fill="#9A85C6" stroke="none" stroke-width="1" />
+<text x="1642" y="920" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="650" fill="#1F3B52" text-anchor="start" >Publish Model Manifest</text>
+<text x="1642" y="950" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="450" fill="#6B8192" text-anchor="start" >Model reference</text>
+<text x="1118" y="831" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="640" fill="#629A8B" text-anchor="middle" >Dataset</text>
+<text x="1485" y="834" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="640" fill="#629A8B" text-anchor="middle" >Track</text>
+<path d="M 119 1123 L 171 1123" fill="none" stroke="#7595B2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" marker-end="url(#arrowBlue)"/>
+<text x="186" y="1130" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="550" fill="#697F91" text-anchor="start" >Implemented flow</text>
+<path d="M 443 1123 L 495 1123" fill="none" stroke="#AAA8B8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="1" stroke-dasharray="7 7" marker-end="url(#arrowDashed)"/>
+<text x="511" y="1130" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="550" fill="#697F91" text-anchor="start" >Planned feature</text>
+<rect x="1270" y="1096" width="600" height="54" rx="16" fill="#F9FBFC" stroke="#E2E8EC" stroke-width="1.1" />
+<circle cx="1300" cy="1123" r="5" fill="#A8ADB7"/>
+<text x="1320" y="1130" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="540" fill="#8993A0" text-anchor="start" >Future: automated deployment &amp; monitoring</text>
+</svg>

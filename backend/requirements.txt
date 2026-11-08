@@ -10,3 +10,4 @@ mlflow
 psutil
 protobuf
 xgboost
+gunicorn

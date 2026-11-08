@@ -1,93 +1,99 @@
-from operator import index
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from datetime import datetime
-import sklearn
-from fastapi import FastAPI, File, UploadFile
-import uvicorn
-import sys  
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-import mlflow
-from src.clean_data_csv import clean_data
-from src.clean_data_json import clean_data_json
-from examplejson.churn_info import ChurnPredictionModel
-import json
+"""Churn prediction API with legacy model compatibility."""
+from contextlib import asynccontextmanager
+
+import logging
 import os
+import pandas as pd
 import mlflow.pyfunc
-import pickle
-from fastapi import HTTPException
-import xgboost
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+if __package__ in (None, ""):
+    from src.clean_data_csv import clean_data
+    from src.features import FEATURES, select_features
+    from src.tracking import configure_tracking, best_run
+    from examplejson.churn_info import ChurnPredictionModel
+else:
+    from .src.clean_data_csv import clean_data
+    from .src.features import FEATURES, select_features
+    from .src.tracking import configure_tracking, best_run
+    from .examplejson.churn_info import ChurnPredictionModel
 
-DagsHub_username = os.getenv("DagsHub_username")
-DagsHub_token=os.getenv("DagsHub_token")
-os.environ['MLFLOW_TRACKING_USERNAME']= "rami4real"
-os.environ["MLFLOW_TRACKING_PASSWORD"] = "69866747ee87f7d38c71043c4419de31e49131e0"
-
-
-
-#setup mlflow
-mlflow.set_tracking_uri('https://dagshub.com/rami4real/mymlproject.mlflow/') #your mlfow tracking uri
-
-
-app = FastAPI()
-origins = ['*']
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+logger = logging.getLogger(__name__)
+model = None
+model_uri = None
 
 
-#let's call the model from the model registry ( in production stage)
+@asynccontextmanager
+async def lifespan(app):
+    global model, model_uri
+    model = None
+    model_uri = None
+    try:
+        configure_tracking()
+        model_uri = os.getenv("MODEL_URI")
+        if not model_uri:
+            run = best_run()
+            model_uri = f"runs:/{run['run_id']}/ML_models"
+        model = mlflow.pyfunc.load_model(model_uri)
+    except Exception:
+        logger.exception("Model loading failed; prediction endpoints are unavailable")
+    yield
+    model = None
 
-df_mlflow=mlflow.search_runs(filter_string="metrics.F1_score_test < 1")
-run_id = df_mlflow.loc[df_mlflow['metrics.F1_score_test'].idxmin()]['run_id']
 
+app = FastAPI(title="Customer Churn Prediction API", version="2.1.0", lifespan=lifespan)
+origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "*").split(",")]
+app.add_middleware(CORSMiddleware, allow_origins=origins,
+                   allow_credentials="*" not in origins,
+                   allow_methods=["GET", "POST"], allow_headers=["*"])
 
-
-logged_model = f'runs:/{run_id}/ML_models'
-
-# Load model as a PyFuncModel.
-model = mlflow.pyfunc.load_model(logged_model)
 
 @app.get("/")
 def read_root():
-    return {"Hello": "to churn  detector app version 2"}
+    return {"message": "Customer Churn Prediction API", "docs": "/docs"}
 
+
+@app.get("/health")
+def health():
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model unavailable")
+    return {"status": "ok", "model_loaded": True}
+
+
+@app.get("/features")
+def features():
+    return {"features": FEATURES}
+
+
+@app.get("/model-info")
+def model_info():
+    return {"model_uri": model_uri, "model_loaded": model is not None}
+
+
+def predict_frame(frame):
+    if model is None:
+        raise HTTPException(status_code=503, detail="Model unavailable")
+    try:
+        frame = select_features(frame)
+        metadata = getattr(model.metadata, "metadata", None) or {}
+        # New models contain their own processors. Existing classifiers keep
+        # using the original bundled scaler and encoders.
+        if metadata.get("input_format") != "raw-v1":
+            frame = clean_data(frame)
+        return {"predictions": model.predict(frame).tolist()}
+    except (ValueError, KeyError, TypeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.post("/predict/csv")
-def return_predictions(file: UploadFile = File(...)):
-    data = pd.read_csv(file.file)
-    preprocessed_data = clean_data(data)
-    predictions = model.predict(preprocessed_data)
-    return {"predictions": predictions.tolist()}
+def predict_csv(file: UploadFile = File(...)):
+    try:
+        frame = pd.read_csv(file.file)
+    except (ValueError, UnicodeError) as exc:
+        raise HTTPException(status_code=422, detail="Invalid CSV file") from exc
+    return predict_frame(frame)
 
 
-
-# this endpoint receives data in the form of json (informations about one transaction)
 @app.post("/predict")
 def predict(data: ChurnPredictionModel):
-    # Convert received data into a DataFrame
-    received = data.dict()
-    df = pd.DataFrame([received])  # Wrap `received` in a list to create a single-row DataFrame
-    # Apply your JSON cleaning function if necessary
-    preprocessed_data = clean_data_json(df)
-
-    # Debugging: Check the preprocessed data
-    print(preprocessed_data)
-
-    # Predict using the model
-    predictions = model.predict(preprocessed_data)
-
-    # Return predictions as JSON
-    return {"predictions": predictions.tolist()}
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", 8080)))
-
+    return predict_frame(pd.DataFrame([data.model_dump(by_alias=True)]))
