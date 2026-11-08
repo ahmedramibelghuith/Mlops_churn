@@ -154,20 +154,3 @@ GitHub Actions runs isolated API and preprocessing tests without DagsHub credent
 To use Jenkins later, configure a Linux agent with Python, venv support, Git, and network access. Add a Secret Text credential named `dagshub-token`, configure this repository's `Jenkinsfile`, and set the `MIN_F1` parameter. The pipeline installs its dependencies on the CI agent, retrieves DVC data, trains the models, and registers a qualifying candidate. It performs no Docker operations or automatic deployment. Configure a webhook or polling separately if push-triggered execution is desired.
 
 The Arize notebook requires externally supplied account credentials. Saved Deepchecks HTML files are historical reports, not current CI results.
-
-## Before pushing
-
-```bash
-git status --short
-git diff --check
-git diff
-git diff --cached
-```
-
-Review both current and staged changes, revoke exposed historical credentials, and verify your remote destination before committing and pushing. Local credentials, bytecode, notebook checkpoints, and swap files are excluded from tracking. The original local files are retained.
-
-## Contributors
-
-- Ahmed Rami Belguith
-- Mohamed Hbib Kammoun
-- Azza Shell
